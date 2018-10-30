@@ -32,7 +32,7 @@ function getAllProducts() {
 function prompt(results) {
   // show the table of the items and their information
   console.table(results);
-  // ask user two questions
+  // ask the user two questions
   inquirer
     .prompt([{
         name: "item",
@@ -60,6 +60,7 @@ function prompt(results) {
           if (parseInt(answers.unitsToBuy) <= results[i].stock_quantity) {
             var itemsLeft = results[i].stock_quantity - parseInt(answers.unitsToBuy);
             var itemsLeftString = itemsLeft.toString();
+            // updating the number of items to the new amount after purchase
             db.query(
               "UPDATE products SET ? WHERE ?",
               [{
@@ -73,10 +74,11 @@ function prompt(results) {
                 if (error) throw error;
                 var cost = parseInt(answers.unitsToBuy) * results[i].price;
                 console.log(`Cost: $${cost}`);
+                // run the prompt again to allow the customer to place another order
                 getAllProducts();
               }
             )
-          } else {
+          } else { // if not enough of the product is available
             console.log("Insufficient quantity!");
             // run the prompt again to allow the customer to place another order
             getAllProducts();
